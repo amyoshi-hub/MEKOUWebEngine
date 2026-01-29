@@ -3,7 +3,7 @@ import { Container, Panel, Label, TextInput, BooleanInput } from '@playcanvas/pc
 import * as pc from 'playcanvas';
 import { jsx } from '../../../jsx';
 import { Material } from './Material/Material';
-import { CustomSlider, CustomVectorInput } from '../elements/CustomInputs';
+import { CustomSlider, CustomVectorInput, NativeSlider, NativeToggle } from '../elements/CustomInputs';
 
 /**
  * Utility to create an attribute row (Label + Input)

@@ -1,13 +1,24 @@
-import { data } from 'examples/observer';
-import { fileImport, rootPath, deviceType } from 'examples/utils';
+import * as pc from 'playcanvas';
+
+// Local constants and helpers (replaced examples/utils)
+const rootPath = '';
+const deviceType = 'webgl2';
+const fileImport = (url: string) => import(/* @vite-ignore */ url);
+
+// Mock data observer (replaced examples/observer)
+const data = {
+    set: (path: string, value: any) => { console.log(`Data set: ${path}`, value); },
+    get: (path: string) => { return null; },
+    on: (path: string, cb: any) => { }
+};
 
 // @config DESCRIPTION <div style='text-align:center'><div>(<b>LMB / RMB </b>) Orbit</div><div>(<b>Hold Shift / MMB </b>) Pan</div><div>(<b>Wheel / Pinch</b>) Zoom</div><div>(<b>F</b>) Focus (<b>R</b>) Reset</div></div>
 const { CameraControls } = await fileImport(`${rootPath}/static/scripts/esm/camera-controls.mjs`);
 
 const tmpVa = new pc.Vec2();
 
-const canvas = document.getElementById('application-canvas');
-if (!(canvas instanceof HTMLCanvasElement)) {
+const canvas = document.getElementById('application-canvas') as HTMLCanvasElement;
+if (!canvas) {
     throw new Error('No canvas found');
 }
 window.focus();
@@ -63,8 +74,8 @@ app.start();
 app.scene.ambientLight.set(0.4, 0.4, 0.4);
 
 app.scene.skyboxMip = 1;
-app.scene.skyboxIntensity = 0.4;
-app.scene.envAtlas = assets.helipad.resource;
+(app.scene as any).skyboxIntensity = 0.4;
+app.scene.envAtlas = assets.helipad.resource as any;
 
 // Create a directional light
 const light = new pc.Entity();
@@ -72,7 +83,7 @@ light.addComponent('light');
 light.setLocalEulerAngles(45, 30, 0);
 app.root.addChild(light);
 
-const statue = assets.statue.resource.instantiateRenderEntity();
+const statue = (assets.statue.resource as any).instantiateRenderEntity();
 statue.setLocalPosition(0, -0.5, 0);
 app.root.addChild(statue);
 
@@ -83,11 +94,12 @@ app.root.addChild(statue);
  * @param {pc.Entity} entity - The entity.
  * @returns {pc.BoundingBox} The bounding box.
  */
-const calcEntityAABB = (bbox, entity) => {
+const calcEntityAABB = (bbox: pc.BoundingBox, entity: pc.Entity) => {
     bbox.center.set(0, 0, 0);
     bbox.halfExtents.set(0, 0, 0);
-    entity.findComponents('render').forEach((render) => {
-        render.meshInstances.forEach((/** @type {pc.MeshInstance} */ mi) => {
+    entity.findComponents('render').forEach((render: any) => {
+        const r = render as pc.RenderComponent;
+        r.meshInstances.forEach((mi: pc.MeshInstance) => {
             bbox.add(mi.aabb);
         });
     });
@@ -102,7 +114,7 @@ camera.addComponent('camera');
 camera.addComponent('script');
 camera.setPosition(start);
 app.root.addChild(camera);
-const cc = /** @type { CameraControls} */ (camera.script.create(CameraControls));
+const cc = (camera.script as any).create(CameraControls) as any;
 const sceneSize = bbox.halfExtents.length();
 Object.assign(cc, {
     focusPoint: bbox.center,
@@ -113,7 +125,7 @@ Object.assign(cc, {
 });
 
 // focus on entity when 'f' key is pressed
-const onKeyDown = (/** @type {KeyboardEvent} */ e) => {
+const onKeyDown = (e: KeyboardEvent) => {
     switch (e.key) {
         case 'f': {
             cc.focus(bbox.center, true);
@@ -148,7 +160,7 @@ data.set('attr', [
     'yawRange',
     'zoomRange',
     'zoomScaleMin'
-].reduce((/** @type {Record<string, any>} */ obj, key) => {
+].reduce((obj: Record<string, any>, key: string) => {
     const value = cc[key];
 
     if (value instanceof pc.Vec2) {
@@ -160,7 +172,7 @@ data.set('attr', [
     return obj;
 }, {}));
 
-data.on('*:set', (/** @type {string} */ path, /** @type {any} */ value) => {
+data.on('*:set', (path: string, value: any) => {
     const [category, key, index] = path.split('.');
     if (category !== 'attr') {
         return;
@@ -171,8 +183,8 @@ data.on('*:set', (/** @type {string} */ path, /** @type {any} */ value) => {
         return;
     }
     if (index !== undefined) {
-        const arr = data.get(`${category}.${key}`);
-        cc[key] = tmpVa.set(arr[0], arr[1]);
+        const arr = data.get(`${category}.${key}`) as any;
+        if (arr) cc[key] = tmpVa.set(arr[0], arr[1]);
         return;
     }
 

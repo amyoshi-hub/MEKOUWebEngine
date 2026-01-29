@@ -1,5 +1,6 @@
 
 import { Container, Label, NumericInput } from '@playcanvas/pcui';
+import * as pc from 'playcanvas';
 import { jsx } from '../../../jsx';
 
 /**
@@ -106,6 +107,156 @@ export class CustomSlider {
         this._value = v;
         this.input.value = v;
         // update fill...
+        const min = this.input.min ?? 0;
+        const max = this.input.max ?? 100;
+        const percent = ((v - min) / (max - min)) * 100;
+        const fill = this.slider.querySelector('.custom-slider-fill');
+        if (fill) fill.style.width = `${Math.max(0, Math.min(100, percent))}%`;
+    }
+}
+
+/**
+ * Standard styled slider (ported from createSlider)
+ */
+export class NativeSlider {
+    public dom: HTMLElement;
+    private slider: HTMLInputElement;
+    private valDisplay: HTMLElement;
+
+    constructor(props: { min?: number, max?: number, step?: number, value?: number, label?: string, onChange?: (val: number) => void }) {
+        const container = document.createElement('div');
+        container.style.display = 'flex';
+        container.style.alignItems = 'center';
+        container.style.gap = '8px';
+        container.style.marginBottom = '10px';
+
+        if (props.label) {
+            const label = document.createElement('span');
+            label.textContent = props.label;
+            label.style.fontSize = '11px';
+            label.style.color = '#ccc';
+            label.style.minWidth = '80px';
+            container.appendChild(label);
+        }
+
+        this.slider = document.createElement('input');
+        this.slider.type = 'range';
+        this.slider.min = (props.min ?? 0).toString();
+        this.slider.max = (props.max ?? 1).toString();
+        this.slider.step = (props.step ?? 0.01).toString();
+        this.slider.value = (props.value ?? 0).toString();
+        this.slider.style.flex = '1';
+
+        this.valDisplay = document.createElement('span');
+        this.valDisplay.textContent = (props.value ?? 0).toFixed(2);
+        this.valDisplay.style.fontSize = '11px';
+        this.valDisplay.style.minWidth = '40px';
+        this.valDisplay.style.color = '#00abff';
+
+        this.slider.addEventListener('input', (e) => {
+            const val = parseFloat((e.target as HTMLInputElement).value);
+            this.valDisplay.textContent = val.toFixed(2);
+            if (props.onChange) props.onChange(val);
+        });
+
+        container.appendChild(this.slider);
+        container.appendChild(this.valDisplay);
+        this.dom = container;
+    }
+
+    set value(v: number) {
+        this.slider.value = v.toString();
+        this.valDisplay.textContent = v.toFixed(2);
+    }
+}
+
+/**
+ * Native checkbox wrapper
+ */
+export class NativeToggle {
+    public dom: HTMLElement;
+    private checkbox: HTMLInputElement;
+
+    constructor(props: { label: string, value: boolean, onChange: (val: boolean) => void }) {
+        const container = document.createElement('div');
+        container.style.display = 'flex';
+        container.style.alignItems = 'center';
+        container.style.justifyContent = 'space-between';
+        container.style.marginBottom = '10px';
+        container.style.padding = '0 4px';
+
+        const text = document.createElement('span');
+        text.textContent = props.label;
+        text.style.fontSize = '11px';
+        text.style.color = '#ccc';
+
+        this.checkbox = document.createElement('input');
+        this.checkbox.type = 'checkbox';
+        this.checkbox.checked = props.value;
+        this.checkbox.style.cursor = 'pointer';
+
+        this.checkbox.addEventListener('change', () => props.onChange(this.checkbox.checked));
+
+        container.appendChild(text);
+        container.appendChild(this.checkbox);
+        this.dom = container;
+    }
+
+    set value(v: boolean) {
+        this.checkbox.checked = v;
+    }
+}
+
+/**
+ * Custom Color Set (Swatches)
+ */
+export class CustomColorSet {
+    public dom: HTMLElement;
+    public onChange?: (color: pc.Color) => void;
+
+    constructor(props: { colors: string[], value?: pc.Color, label?: string }) {
+        const container = document.createElement('div');
+        container.className = 'custom-color-set-container';
+        container.style.marginBottom = '10px';
+
+        if (props.label) {
+            const label = document.createElement('div');
+            label.innerText = props.label;
+            label.style.fontSize = '11px';
+            label.style.color = '#ccc';
+            label.style.marginBottom = '5px';
+            container.appendChild(label);
+        }
+
+        const swatchContainer = document.createElement('div');
+        swatchContainer.style.display = 'flex';
+        swatchContainer.style.flexWrap = 'wrap';
+        swatchContainer.style.gap = '4px';
+
+        props.colors.forEach(hex => {
+            const swatch = document.createElement('div');
+            swatch.style.width = '20px';
+            swatch.style.height = '20px';
+            swatch.style.backgroundColor = hex;
+            swatch.style.borderRadius = '2px';
+            swatch.style.cursor = 'pointer';
+            swatch.style.border = '1px solid #333';
+
+            swatch.addEventListener('click', () => {
+                const c = new pc.Color();
+                c.fromString(hex);
+                if (this.onChange) this.onChange(c);
+
+                // Active state
+                Array.from(swatchContainer.children).forEach(child => (child as HTMLElement).style.borderColor = '#333');
+                swatch.style.borderColor = '#00abff';
+            });
+
+            swatchContainer.appendChild(swatch);
+        });
+
+        container.appendChild(swatchContainer);
+        this.dom = container;
     }
 }
 

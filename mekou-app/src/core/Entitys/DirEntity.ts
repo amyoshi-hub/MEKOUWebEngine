@@ -1,40 +1,28 @@
-
 import * as pc from 'playcanvas';
 
 /**
- * Base Directory Entity
- * Used for organizing objects in the hierarchy with a custom icon/behavior.
+ * Base class for Core entities in the engine.
+ * Provides standard initialization and lifecycle hooks.
  */
 export class DirEntity {
-    static create(app: pc.AppBase, name: string = 'New Folder') {
-        const entity = new pc.Entity(name);
-        entity.tags.add('dir');
-        app.root.addChild(entity);
-        return entity;
+    public entity: pc.Entity;
+    public app: pc.AppBase;
+
+    constructor(name: string, app: pc.AppBase) {
+        this.app = app;
+        this.entity = new pc.Entity(name);
+        app.root.addChild(this.entity);
     }
-}
 
-/**
- * PostEffect Entity
- * Holds post-effect settings and applies them to the camera.
- */
-export class PostEffectEntity {
-    static create(app: pc.AppBase) {
-        const entity = new pc.Entity('PostEffectSettings');
-        entity.addComponent('script');
+    public addComponent(type: string, data?: any) {
+        return this.entity.addComponent(type, data);
+    }
 
-        // Add SSAO by default if available
-        if (!(entity.script as any).has('ssao')) {
-            (entity.script as any).create('ssao', {
-                attributes: {
-                    radius: 4,
-                    intensity: 1,
-                    samples: 16
-                }
-            });
-        }
+    public setPosition(x: number, y: number, z: number) {
+        this.entity.setLocalPosition(x, y, z);
+    }
 
-        app.root.addChild(entity);
-        return entity;
+    public destroy() {
+        this.entity.destroy();
     }
 }

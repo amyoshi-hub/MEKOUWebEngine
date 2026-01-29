@@ -8,6 +8,9 @@ const fileImport = (url: string) => import(/* @vite-ignore */ url);
 const { FirstPersonController } = (await fileImport(`${rootPath}/static/scripts/esm/first-person-controller.mjs`)) as any;
 
 const canvas = document.getElementById('application-canvas') as HTMLCanvasElement;
+if (!canvas) {
+    throw new Error('No canvas found');
+}
 window.focus();
 
 (pc.WasmModule as any).setConfig('Ammo', {
@@ -80,7 +83,7 @@ app.scene.envAtlas = assets.helipad.resource as any;
 app.scene.skyboxRotation = new pc.Quat().setFromEulerAngles(0, 10, 0);
 
 // Gravity (increase for more realistic jumping)
-app.systems.rigidbody?.gravity.set(0, -18, 0);
+(app.systems.rigidbody as any)?.gravity.set(0, -18, 0);
 
 // Camera
 const camera = new pc.Entity();
@@ -105,13 +108,14 @@ const map = (assets.map.resource as any).instantiateRenderEntity();
 map.setLocalScale(2, 2, 2);
 map.setLocalEulerAngles(-90, 0, 0);
 map.findComponents('render').forEach((render: any) => {
-    const entity = render.entity;
+    const r = render as pc.RenderComponent;
+    const entity = r.entity;
     entity.addComponent('rigidbody', {
         type: 'static'
     });
     entity.addComponent('collision', {
         type: 'mesh',
-        renderAsset: render.asset
+        renderAsset: r.asset
     });
 });
 const level = new pc.Entity();
@@ -138,7 +142,7 @@ characterController.addComponent('rigidbody', {
     restitution: 0
 });
 characterController.addComponent('script');
-const fpc = characterController.script?.create(FirstPersonController, {
+const fpc = (characterController.script as any)?.create(FirstPersonController, {
     properties: {
         camera,
         jumpForce: 850
@@ -151,7 +155,7 @@ app.root.addChild(characterController);
  * @param {number} baseSize - The base size.
  * @param {number} stickSize - The stick size.
  */
-const createJoystickUI = (side: string, baseSize = 100, stickSize = 60) => {
+const createJoystickUI = (side: string, baseSize: number = 100, stickSize: number = 60) => {
     const base = document.createElement('div');
     Object.assign(base.style, {
         display: 'none',

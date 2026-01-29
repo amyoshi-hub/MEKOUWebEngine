@@ -7,6 +7,7 @@ export class ProjectSetting {
     public controlType: 'fly' | 'fps' | 'tps' = 'fly';
     public flySpeed: number = 10;
     public language: string = 'en';
+    public sceneList: string[] = ['Templete/SceneList.json'];
 
     constructor(mekou: MekouApp) {
         this.mekou = mekou;
@@ -81,6 +82,16 @@ export class ProjectSetting {
 
     public setLanguage(lang: string) {
         this.language = lang;
+    }
+
+    public addScene(path: string) {
+        if (!this.sceneList.includes(path)) {
+            this.sceneList.push(path);
+        }
+    }
+
+    public removeScene(path: string) {
+        this.sceneList = this.sceneList.filter(s => s !== path);
     }
 
     public exportRustBuild() {

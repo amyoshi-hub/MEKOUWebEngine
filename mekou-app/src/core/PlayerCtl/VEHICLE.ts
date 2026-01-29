@@ -1,16 +1,22 @@
-import { rootPath, deviceType } from 'examples/utils';
+import * as pc from 'playcanvas';
 
-const canvas = /** @type {HTMLCanvasElement} */ (document.getElementById('application-canvas'));
+const rootPath = '';
+const deviceType = 'webgl2';
+
+const canvas = document.getElementById('application-canvas') as HTMLCanvasElement;
+if (!canvas) {
+    throw new Error('No canvas found');
+}
 window.focus();
 
-pc.WasmModule.setConfig('Ammo', {
+(pc.WasmModule as any).setConfig('Ammo', {
     glueUrl: `${rootPath}/static/lib/ammo/ammo.wasm.js`,
     wasmUrl: `${rootPath}/static/lib/ammo/ammo.wasm.wasm`,
     fallbackUrl: `${rootPath}/static/lib/ammo/ammo.js`
 });
 
 await new Promise((resolve) => {
-    pc.WasmModule.getInstance('Ammo', () => resolve());
+    (pc.WasmModule as any).getInstance('Ammo', () => resolve(true));
 });
 
 const assets = {
@@ -68,10 +74,10 @@ assetListLoader.load(() => {
     // setup skydome
     app.scene.skyboxMip = 2;
     app.scene.exposure = 0.3;
-    app.scene.envAtlas = assets.helipad.resource;
+    app.scene.envAtlas = assets.helipad.resource as any;
 
-    const lighting = app.scene.lighting;
-    lighting.shadowsEnabled = false;
+    const lighting = (app.scene as any).lighting;
+    if (lighting) lighting.shadowsEnabled = false;
 
     // Create a static ground shape for our car to drive on
     const ground = new pc.Entity('Ground');
@@ -95,7 +101,7 @@ assetListLoader.load(() => {
         // Create a wheel
         const wheel = new pc.Entity(wheelDef.name);
         wheel.addComponent('script');
-        wheel.script.create('vehicleWheel', {
+        (wheel.script as any).create('vehicleWheel', {
             attributes: {
                 debugRender: true,
                 isFront: wheelDef.front
@@ -115,13 +121,13 @@ assetListLoader.load(() => {
         type: 'compound'
     });
     vehicle.addComponent('script');
-    vehicle.script.create('vehicle', {
+    (vehicle.script as any).create('vehicle', {
         attributes: {
             wheels: wheels
         }
     });
-    vehicle.script.create('vehicleControls');
-    vehicle.script.create('actionPhysicsReset', {
+    (vehicle.script as any).create('vehicleControls');
+    (vehicle.script as any).create('actionPhysicsReset', {
         attributes: {
             event: 'reset'
         }
@@ -132,7 +138,7 @@ assetListLoader.load(() => {
     const chassis = new pc.Entity('Chassis');
     chassis.addComponent('collision', {
         type: 'box',
-        halfExtents: [0.6, 0.35, 1.65]
+        halfExtents: new pc.Vec3(0.6, 0.35, 1.65)
     });
     chassis.setLocalPosition(0, 0.65, 0);
 
@@ -140,7 +146,7 @@ assetListLoader.load(() => {
     const cab = new pc.Entity('Cab');
     cab.addComponent('collision', {
         type: 'box',
-        halfExtents: [0.5, 0.2, 1]
+        halfExtents: new pc.Vec3(0.5, 0.2, 1)
     });
     cab.setLocalPosition(0, 1.2, -0.25);
 
@@ -163,7 +169,7 @@ assetListLoader.load(() => {
                 type: 'box'
             });
             block.addComponent('script');
-            block.script.create('actionPhysicsReset', {
+            (block.script as any).create('actionPhysicsReset', {
                 attributes: {
                     event: 'reset'
                 }
@@ -191,29 +197,31 @@ assetListLoader.load(() => {
     const camera = new pc.Entity('Camera');
     camera.addComponent('camera');
     camera.addComponent('script');
-    camera.script.create('trackingCamera', {
+    (camera.script as any).create('trackingCamera', {
         attributes: {
             target: vehicle
         }
     });
     camera.translate(0, 10, 15);
-    camera.lookAt(0, 0, 0);
+    camera.lookAt(new pc.Vec3(0, 0, 0));
     app.root.addChild(camera);
 
     // Enable rendering and resetting of all rigid bodies in the scene
     app.root.addComponent('script');
-    app.root.script.create('renderPhysics', {
+    (app.root.script as any).create('renderPhysics', {
         attributes: {
             drawShapes: true,
             opacity: 1
         }
     });
 
-    app.keyboard.on('keydown', (e) => {
-        if (e.key === pc.KEY_R) {
-            app.fire('reset');
-        }
-    });
+    if (app.keyboard) {
+        app.keyboard.on('keydown', (e: pc.KeyboardEvent) => {
+            if (e.key === pc.KEY_R) {
+                app.fire('reset');
+            }
+        });
+    }
 });
 
 export { app };

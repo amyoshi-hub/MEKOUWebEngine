@@ -184,17 +184,43 @@ export class ProjectSettingPanel {
         // --- Build Section ---
         settingsContent.append(jsx(Label, { text: 'BUILD SETTINGS', class: 'settings-section-title' }));
 
-        const buildList = jsx(Container, { class: 'build-scene-list', marginBottom: 12 });
-        const scenes = ['Template/SceneList.json'];
-        scenes.forEach(s => {
-            const row = jsx(Container, { flex: true, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 4, class: 'scene-item-row' });
-            row.append(jsx(Label, { text: s, fontScale: 0.8 }));
-            row.append(jsx(Label, { text: '√', class: 'scene-active-check' }));
-            buildList.append(row);
+        const buildListContainer = jsx(Container, { class: 'build-scene-list', marginBottom: 12 });
+
+        const renderBuildList = () => {
+            while (buildListContainer.dom.firstChild) buildListContainer.dom.removeChild(buildListContainer.dom.firstChild);
+
+            this.settingsLogic.sceneList.forEach(s => {
+                const row = jsx(Container, { flex: true, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 4, class: 'scene-item-row' });
+                row.append(jsx(Label, { text: s, fontScale: 0.8 }));
+
+                const removeBtn = jsx(Button, { text: '×', class: 'remove-scene-btn' });
+                removeBtn.on('click', () => {
+                    this.settingsLogic.removeScene(s);
+                    renderBuildList();
+                });
+                row.append(removeBtn);
+                buildListContainer.append(row);
+            });
+        };
+        renderBuildList();
+        settingsContent.append(buildListContainer);
+
+        const addSceneRow = jsx(Container, { flex: true, flexDirection: 'row', gap: 4, marginBottom: 12 });
+        const sceneInput = jsx(Label, { text: 'Add Scene Path...', class: 'path-placeholder', flexGrow: 1 });
+        const addBtn = jsx(Button, { text: '+', class: 'add-scene-btn' });
+        addBtn.on('click', () => {
+            const path = prompt("Enter scene JSON path:", "public/Templete/SceneList.json");
+            if (path) {
+                this.settingsLogic.addScene(path);
+                renderBuildList();
+            }
         });
-        settingsContent.append(buildList);
+        addSceneRow.append(sceneInput);
+        addSceneRow.append(addBtn);
+        settingsContent.append(addSceneRow);
 
         const buildGroup = jsx(Container, { flex: true, flexDirection: 'row', gap: 8 });
+
 
         const rustBtn = jsx(Button, { text: 'BUILD (Rust/Tauri)', class: 'export-btn', flexGrow: 1 });
         rustBtn.on('click', () => {

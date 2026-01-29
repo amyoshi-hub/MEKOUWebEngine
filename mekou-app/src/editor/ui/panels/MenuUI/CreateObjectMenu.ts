@@ -1,5 +1,5 @@
 import { ContextMenu } from '../../../components/ContextMenu';
-import { ObjectCreator } from '../../../helpers/ObjectCreator';
+import { ObjectCreator } from '../../../core/ObjectCreator';
 
 export function showCreateObjectMenu(x: number, y: number, hierarchy: any, app: pc.AppBase) {
     ContextMenu.show(x, y, [

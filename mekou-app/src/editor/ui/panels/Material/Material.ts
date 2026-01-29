@@ -1,7 +1,7 @@
 import { Panel } from '@playcanvas/pcui';
 import * as pc from 'playcanvas';
 import { jsx } from '../../../../jsx';
-import { CustomSlider, CustomDropdown } from '../../elements/CustomInputs';
+import { CustomSlider, CustomDropdown, CustomColorSet } from '../../elements/CustomInputs';
 
 export interface MaterialPreset {
     opacity?: number;
@@ -19,6 +19,13 @@ export const PRESETS: Record<string, MaterialPreset> = {
     chrome: { metalness: 0.9, gloss: 100, diffuse: new pc.Color(0.7, 0.7, 0.7) },
     matte: { metalness: 0, gloss: 5, diffuse: new pc.Color(0.5, 0.5, 0.5) }
 };
+
+export const COLOR_PALETTE = [
+    '#ffffff', '#808080', '#000000',
+    '#ff0000', '#00ff00', '#0000ff',
+    '#ffff00', '#00ffff', '#ff00ff',
+    '#ffa500', '#800080', '#008080'
+];
 
 export class Material {
     static drawMaterial(entity: pc.Entity) {
@@ -63,6 +70,18 @@ export class Material {
         const glossSlider = new CustomSlider({ label: 'Glossiness', value: mat.gloss || 0, min: 0, max: 100, precision: 1 });
         glossSlider.onChange = (v: number) => { mat.gloss = v; mat.update(); };
         renderPanel.append(glossSlider);
+
+        // --- 3. カラーセット ---
+        const colorSet = new CustomColorSet({
+            label: 'Quick Color',
+            colors: COLOR_PALETTE,
+            value: mat.diffuse
+        });
+        colorSet.onChange = (c: pc.Color) => {
+            mat.diffuse = c;
+            mat.update();
+        };
+        renderPanel.append(colorSet);
 
         return renderPanel;
     }
