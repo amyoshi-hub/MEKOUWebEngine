@@ -2,13 +2,15 @@
 import { Container, Label } from '@playcanvas/pcui';
 import * as pc from 'playcanvas';
 import { jsx } from '../../../jsx';
-import { TransformGizmo } from '../../../engine/scripts/TransformGizmo';
+import { TransformGizmo } from '../../core/TransformGizmo';
 import { ObjectCreator } from '../../helpers/ObjectCreator';
 
 export class SceneView {
     public dom: HTMLElement;
     public container: any;
     public onEntityPicked?: (entity: pc.Entity | null) => void;
+    // active needs to be public so it can be accessed from MainLayout
+    public activeEditCamera: boolean = true;
     private app?: pc.AppBase;
 
     private eulerX: number = 0;

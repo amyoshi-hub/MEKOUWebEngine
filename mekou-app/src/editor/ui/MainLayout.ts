@@ -70,26 +70,29 @@ export class MainLayout {
         playBtn.on('click', () => {
             if (!this.mekou) return;
             isPlaying = !isPlaying;
+            const allCameras = this.mekou.app.root.findComponents('camera') as pc.CameraComponent[];
             if (isPlaying) {
                 this.mekou.app.timeScale = 1;
                 playBtn.text = '■';
+                sceneView.active = false;
+
                 playBtn.dom.classList.add('play-active');
 
-                if (this.settingsLogic) {
-                    this.currentPlayer = new Player(this.mekou.app);
-                    const mode = this.settingsLogic.controlType.toUpperCase() as any;
-                    this.currentPlayer.switchController(mode);
+                const gameCam = allCameras.find(c => c.entity.name === 'MekouPlayer' || c.entity.tags.has('MainCamera'));
+                if (gameCam) {
+                    gameCam.enabled = true;
+                    // 他のカメラ（エディタ用など）を全てオフにする
+                    allCameras.forEach(c => { if (c !== gameCam) c.enabled = false; });
                 }
+                sceneView.active = false; //エディター用のカメラを無効に
             } else {
                 this.mekou.app.timeScale = 0;
                 playBtn.text = '▶';
-                playBtn.dom.classList.remove('play-active');
-                if (document.pointerLockElement) document.exitPointerLock();
 
-                if (this.currentPlayer) {
-                    this.currentPlayer.entity.destroy();
-                    this.currentPlayer = null;
-                }
+                // エディタカメラを復帰
+                sceneView.active = true;
+                // 念のため全てのGameカメラをオフに
+                allCameras.forEach(c => { if (c.entity.name !== 'EditorCamera') c.enabled = false; });
             }
         });
 

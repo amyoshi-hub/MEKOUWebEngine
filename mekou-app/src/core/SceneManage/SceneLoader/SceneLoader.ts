@@ -47,14 +47,16 @@ export class SceneLoader {
         if (data.components) {
             for (const [key, config] of Object.entries(data.components)) {
                 if (key === 'script') {
-                    if (Array.isArray(config)) {
-                        entity.addComponent('script');
-                        config.forEach(scriptName => {
-                            entity.script?.create(scriptName);
-                        });
-                    }
-                } else {
-                    entity.addComponent(key, config as any);
+                    entity.addComponent('script');
+                    const scriptsToLoad = Array.isArray(config) ? config : config.scripts;
+                    scriptsToLoad.forEach((s: any) => {
+                        const name = typeof s === 'string' ? s : s.name;
+                        const scriptInstance = entity.script?.create(name);
+                        // attributes（速度設定など）も反映させるならここで行う
+                        if (s.attributes && scriptInstance) {
+                            Object.assign(scriptInstance, s.attributes);
+                        }
+                    });
                 }
             }
         }

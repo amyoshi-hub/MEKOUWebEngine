@@ -59,6 +59,14 @@ export class ObjectCreator {
         return entity;
     }
 
+    static createEmpty() {
+        if (!this.app) return;
+        const empty = new pc.Entity('Empty');
+        empty.setLocalPosition(0, 5, 0);
+        this.app.root.addChild(empty);
+        return empty;
+    }
+
     static createBox() {
         if (!this.app) return;
         const box = new pc.Entity('Box');
@@ -89,6 +97,28 @@ export class ObjectCreator {
         plane.setLocalScale(10, 1, 10);
         this.app.root.addChild(plane);
         return plane;
+    }
+
+    static createCamera() {
+        if (!this.app) return;
+        const camera = new pc.Entity('Camera');
+        camera.addComponent('camera', {
+            clearColor: new pc.Color(0.1, 0.1, 0.1),
+            farClip: 1000,
+            fov: 45
+        });
+        camera.setLocalPosition(0, 2, 5);
+        this.app.root.addChild(camera);
+        return camera;
+    }
+
+    static createEmpty() {
+        if (!this.app) return;
+        const empty = new pc.Entity('EmptyObject');
+        // Add a small gizmo or marker if needed, but for now just a transformed entity
+        empty.setLocalPosition(0, 0, 0);
+        this.app.root.addChild(empty);
+        return empty;
     }
 
     static createWorldText() {

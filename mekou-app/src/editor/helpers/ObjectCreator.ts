@@ -1,7 +1,7 @@
 import * as pc from 'playcanvas';
 import { PlayerController } from '../../engine/scripts/PlayerController';
 import { SceneTriger } from '../../core/Entitys/SceneTriger';
-import { TransformGizmo } from '../../engine/scripts/TransformGizmo';
+import { TransformGizmo } from '../core/TransformGizmo';
 import { SimpleAI } from '../../core/Entitys/SimpleAI';
 import { SoundSystem } from '../../core/Entitys/SoundSystem';
 import { SimpleLOD } from '../../core/Entitys/SimpleLOD';

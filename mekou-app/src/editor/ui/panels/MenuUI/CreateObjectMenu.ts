@@ -24,6 +24,20 @@ export function showCreateObjectMenu(x: number, y: number, hierarchy: any, app: 
                 if (e) hierarchy.selectEntity(e);
             }
         },
+        {
+            label: 'Create 3D > Camera', action: () => {
+                const e = ObjectCreator.createCamera();
+                hierarchy.refresh(app);
+                if (e) hierarchy.selectEntity(e);
+            }
+        },
+        {
+            label: 'Create > Empty Object', action: () => {
+                const e = ObjectCreator.createEmpty();
+                hierarchy.refresh(app);
+                if (e) hierarchy.selectEntity(e);
+            }
+        },
         { label: '---', action: () => { } },
         {
             label: 'Create UI > World Text', action: () => {
