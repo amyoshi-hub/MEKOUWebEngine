@@ -11,14 +11,12 @@ import { ObjectCreator } from '../helpers/ObjectCreator';
 import { showCreateObjectMenu } from './panels/MenuUI/CreateObjectMenu';
 import { ProjectSetting } from './panels/MenuUI/ProjectSettingFunc';
 import { ProjectSettingPanel } from './panels/MenuUI/ProjectSettingPanel';
-import { Player } from '../Player';
 
 export class MainLayout {
     public dom: HTMLElement;
     private mekou: MekouApp;
     public settingsPanel?: ProjectSettingPanel;
     public settingsLogic?: ProjectSetting;
-    private currentPlayer: Player | null = null;
 
     constructor(existingMekou: MekouApp) {
         this.mekou = existingMekou;
@@ -74,7 +72,7 @@ export class MainLayout {
             if (isPlaying) {
                 this.mekou.app.timeScale = 1;
                 playBtn.text = '■';
-                sceneView.active = false;
+                sceneView.activeEditCamera = false;
 
                 playBtn.dom.classList.add('play-active');
 
@@ -84,13 +82,13 @@ export class MainLayout {
                     // 他のカメラ（エディタ用など）を全てオフにする
                     allCameras.forEach(c => { if (c !== gameCam) c.enabled = false; });
                 }
-                sceneView.active = false; //エディター用のカメラを無効に
+                sceneView.activeEditCamera = false; //エディター用のカメラを無効に
             } else {
                 this.mekou.app.timeScale = 0;
                 playBtn.text = '▶';
 
                 // エディタカメラを復帰
-                sceneView.active = true;
+                sceneView.activeEditCamera = true;
                 // 念のため全てのGameカメラをオフに
                 allCameras.forEach(c => { if (c.entity.name !== 'EditorCamera') c.enabled = false; });
             }

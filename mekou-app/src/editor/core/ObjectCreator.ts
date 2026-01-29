@@ -59,13 +59,6 @@ export class ObjectCreator {
         return entity;
     }
 
-    static createEmpty() {
-        if (!this.app) return;
-        const empty = new pc.Entity('Empty');
-        empty.setLocalPosition(0, 5, 0);
-        this.app.root.addChild(empty);
-        return empty;
-    }
 
     static createBox() {
         if (!this.app) return;
