@@ -1,0 +1,414 @@
+:root {
+  --bg-main: #1c1c1c;
+  --bg-panel: #252525;
+  --bg-header: #151515;
+  --bg-accent: #333333;
+  --primary: #4f46e5;
+  --primary-hover: #6366f1;
+  --text-main: #e2e2e2;
+  --text-dim: #a3a3a3;
+  --border: #3a3a3a;
+  --unity-blue: #0078d4;
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: var(--font-family);
+  overflow: hidden;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+}
+
+/* Base PCUI Override */
+.pcui-container {
+  background-color: transparent !important;
+}
+
+.pcui-panel {
+  background-color: var(--bg-panel) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.pcui-panel>.pcui-container {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+.pcui-panel-header {
+  background-color: var(--bg-header) !important;
+  color: var(--text-main) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  height: 24px !important;
+}
+
+.pcui-label {
+  color: var(--text-main) !important;
+}
+
+/* Layout */
+.main-layout {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-header {
+  height: 40px;
+  min-height: 40px;
+  background-color: var(--bg-header);
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  padding: 0 12px;
+  z-index: 100;
+  display: flex;
+}
+
+.project-tree-view {
+  padding: 4px !important;
+  background-color: var(--bg-header) !important;
+}
+
+.project-sidebar {
+  border-right: 1px solid var(--border);
+  overflow: auto;
+}
+
+.project-files {
+  padding: 12px;
+  background-color: #1a1a1a;
+  overflow: auto;
+}
+
+.editor-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  /* Crucial to prevent overlap */
+}
+
+.center-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #0c0c0c;
+  overflow: hidden;
+}
+
+/* Hierarchy (Left) */
+.hierarchy-panel {
+  width: 20vw !important;
+  min-width: 200px;
+  height: 100%;
+  border-right: 1px solid var(--border) !important;
+}
+
+/* Inspector (Right) */
+.inspector-panel {
+  width: 20vw !important;
+  min-width: 250px;
+  height: 100%;
+  border-left: 1px solid var(--border) !important;
+}
+
+/* Project (Bottom) */
+.project-panel {
+  height: 33vh !important;
+  min-height: 150px;
+  background-color: var(--bg-panel);
+  border-top: 1px solid var(--border) !important;
+}
+
+/* Scene View */
+.scene-view-panel {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+}
+
+#application-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* Toolbar */
+.toolbar-btn {
+  background-color: var(--bg-accent) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-main) !important;
+  font-size: 11px !important;
+  margin-right: 4px;
+  height: 24px !important;
+  padding: 0 8px !important;
+}
+
+.player-style-select {
+  width: 90px !important;
+  font-size: 11px !important;
+  height: 24px !important;
+}
+
+.toolbar-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-right: 4px;
+  margin-left: 8px;
+}
+
+.play-btn,
+.stop-btn {
+  width: 32px !important;
+  height: 24px !important;
+  font-size: 12px !important;
+}
+
+.play-active {
+  color: #4ade80 !important;
+  background: rgba(74, 222, 128, 0.1) !important;
+}
+
+/* Inspector Items */
+.inspector-content {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.attribute-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.attribute-label {
+  font-size: 11px !important;
+  font-weight: 500;
+  color: var(--text-dim) !important;
+}
+
+/* Global Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4f46e5;
+}
+
+/* PCUI Selection & Hover Overrides */
+.pcui-treeview-item.pcui-selected {
+  background-color: rgba(79, 70, 229, 0.2) !important;
+  color: #fff !important;
+  border-radius: 4px;
+  box-shadow: inset 0 0 10px rgba(79, 70, 229, 0.1);
+}
+
+.pcui-treeview-item:hover:not(.pcui-selected) {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+.pcui-treeview-item-content {
+  padding: 4px 8px !important;
+  height: 28px !important;
+}
+
+.pcui-treeview-item-icon {
+  margin-right: 8px !important;
+  color: var(--text-dim) !important;
+}
+
+.pcui-selected .pcui-treeview-item-icon {
+  color: var(--primary) !important;
+}
+
+/* Panel Design Refinements */
+.pcui-panel {
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.pcui-panel-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  background: linear-gradient(180deg, var(--bg-header), #0f0f0f) !important;
+}
+
+/* Hierarchy & Inspector specifically */
+.hierarchy-panel,
+.inspector-panel {
+  background-color: #121212 !important;
+}
+
+.hierarchy-item {
+  transition: all 0.1s ease;
+}
+
+/* Input Fields Refinement */
+.pcui-numeric-input,
+.pcui-text-input,
+.pcui-select-input {
+  background-color: #0a0a0a !important;
+  border-radius: 4px !important;
+  border: 1px solid var(--border) !important;
+}
+
+.pcui-numeric-input:focus,
+.pcui-text-input:focus {
+  border-color: var(--primary) !important;
+}
+
+.export-btn {
+  background-color: var(--accent) !important;
+  color: white !important;
+  font-weight: bold !important;
+  margin-top: 10px !important;
+}
+
+.export-btn-alt {
+  background-color: #555 !important;
+  color: white !important;
+  font-weight: bold !important;
+  margin-top: 10px !important;
+  border: 1px solid #777 !important;
+}
+
+.settings-section-panel {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  border: 1px solid #333 !important;
+}
+
+.settings-section-title {
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  color: var(--primary) !important;
+  margin-top: 16px !important;
+  margin-bottom: 8px !important;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 10px;
+  color: #888;
+  font-weight: bold;
+  border-bottom: 1px solid #333;
+}
+
+.custom-slider-container {
+  margin: 8px 0;
+  width: 100%;
+}
+
+.custom-slider-track {
+  flex-grow: 1;
+  height: 4px;
+  background: #333;
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+  margin: 0 10px;
+}
+
+.custom-slider-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+.custom-slider-numeric {
+  width: 60px !important;
+}
+
+.custom-dropdown-container {
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.custom-dropdown-select {
+  width: 100%;
+  background-color: #0a0a0a;
+  color: #fff;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  outline: none;
+  font-size: 11px;
+}
+
+.custom-dropdown-select:focus {
+  border-color: var(--primary);
+}
+
+.custom-dropdown-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Vector Inputs */
+.custom-vector-container {
+  gap: 4px;
+  width: 100%;
+}
+
+.vector-axis-container {
+  background: #1a1a1a;
+  border-radius: 4px;
+  padding: 0 4px;
+  border: 1px solid var(--border);
+}
+
+.vector-axis-label {
+  font-size: 9px !important;
+  font-weight: 800;
+  color: var(--text-dim);
+  cursor: ew-resize;
+  /* Indicate drag */
+  padding: 0 4px;
+  min-width: 12px;
+  text-align: center;
+}
+
+.vector-axis-label:hover {
+  color: var(--primary);
+}
+
+.vector-axis-input {
+  border: none !important;
+  background: transparent !important;
+  width: 100% !important;
+  font-size: 11px !important;
+}
